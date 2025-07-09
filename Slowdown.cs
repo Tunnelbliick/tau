@@ -14,7 +14,7 @@ namespace StorybrewScripts
 {
     public class Slowdown : StoryboardObjectGenerator
     {
-//        public override bool Multithreaded => false;
+        //        public override bool Multithreaded => false;
         Playfield field = new Playfield();
         public override void Generate()
         {
@@ -44,7 +44,8 @@ namespace StorybrewScripts
             field.initilizePlayField(receptors, notes, starttime, endtime, width, height, receptorWallOffset, Beatmap.OverallDifficulty);
             field.noteStart = 206188;
             field.noteEnd = 235636;
-            field.initializeNotes(Beatmap.HitObjects.ToList(), Beatmap, isColored, sliderAccuracy);
+
+            field.initializeNotesInvert(Beatmap.HitObjects.ToList(), Beatmap, isColored, sliderAccuracy, -1, 234086);
 
             field.MoveOriginRelative(OsbEasing.InOutSine, 219930, 226732, new Vector2(0, -200), ColumnType.all);
 

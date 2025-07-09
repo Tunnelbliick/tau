@@ -27,7 +27,7 @@ namespace StorybrewScripts
 
             // General values
             var starttime = 17866; // the starttime where the playfield is initialized
-            var endtime = 43414; // the endtime where the playfield is nolonger beeing rendered
+            var endtime = 43317; // the endtime where the playfield is nolonger beeing rendered
             var duration = endtime - starttime; // the length the playfield is kept alive
 
             // Playfield Scale
@@ -67,6 +67,7 @@ namespace StorybrewScripts
                 field.initilizePlayField(receptors, notes, starttime - 50, endtime, 0, -height, receptorWallOffset, Beatmap.OverallDifficulty);
                 field.noteEnd = 44963;
                 field.initializeNotes(Beatmap.HitObjects.ToList(), Beatmap, isColored, sliderAccuracy);
+                //field.AddMines(Beatmap.HitObjects.ToList(), starttime, 30930, starttime);
 
                 field.ScaleReceptor(OsbEasing.None, starttime - 50, starttime - 50, new Vector2(farScale), ColumnType.all);
 
@@ -291,6 +292,16 @@ namespace StorybrewScripts
         public Vector2 NoteFunction(EquationParameters p)
         {
             var pos = p.position;
+
+            if (p.note.isMine && p.progress == 0 && p.time > 17866)
+            {
+                var mineFadeStart = 17866;
+                var mineFadeEnd = 20575;
+                var fadeProgress = 1f - ((p.time - mineFadeStart) / (mineFadeEnd - mineFadeStart));
+                var fadeAtEnd = 1f - ((p.note.renderEnd - mineFadeStart) / (mineFadeEnd - mineFadeStart));
+                p.note.noteSprite.Fade(p.time, p.note.renderEnd, fadeProgress, fadeAtEnd);
+
+            }
 
             if (p.time > 28704)
             {

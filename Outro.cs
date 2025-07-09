@@ -1,5 +1,6 @@
 using OpenTK;
 using OpenTK.Graphics;
+using StorybrewCommon.Animations;
 using StorybrewCommon.Mapset;
 using StorybrewCommon.Scripting;
 using StorybrewCommon.Storyboarding;
@@ -14,7 +15,7 @@ namespace StorybrewScripts
 {
     public class Outro : StoryboardObjectGenerator
     {
-//        public override bool Multithreaded => false;
+        //        public override bool Multithreaded => false;
         // Generate function in a storybrew script
         public override void Generate()
         {
@@ -33,13 +34,13 @@ namespace StorybrewScripts
             var receptorWallOffset = 50f; // how big the boundary box for the receptor is 50 means it will be pushed away 50 units from the wall
 
             // Note initilization Values
-            var sliderAccuracy = 30; // The Segment length for sliderbodies since they are rendered in slices 30 is default
+            var sliderAccuracy = 10; // The Segment length for sliderbodies since they are rendered in slices 30 is default
             var isColored = false; // This property is used if you want to color the notes by urself for effects. It does not swap if the snap coloring is used.
 
             // Drawinstance Values
-            var updatesPerSecond = 100; // The amount of steps the rendring engine does to render out note and receptor positions
+            var updatesPerSecond = 250; // The amount of steps the rendring engine does to render out note and receptor positions
             var scrollSpeed = 1200f / 500f * 600f; // The speed at which the Notes scroll
-            var fadeTime = 0; // The time notes will fade in
+            var fadeTime = 150; // The time notes will fade in
 
             Playfield field = new Playfield();
             field.initilizePlayField(receptors, notes, starttime, endtime, width, height, receptorWallOffset, Beatmap.OverallDifficulty);
@@ -89,7 +90,6 @@ namespace StorybrewScripts
             draw.setNoteMovementPrecision(0.25f);
             draw.setNoteRotationPrecision(0.01f);
             draw.setHoldRotationPrecision(0.01f);
-            draw.setHoldRotationDeadZone(0.01f);
             draw.drawViaEquation(endtime - 264240, NoteFunction, true);
         }
 
@@ -99,20 +99,59 @@ namespace StorybrewScripts
         // Special flags for hold bodies exist
         public Vector2 NoteFunction(EquationParameters p)
         {
-            float amplitude = Utility.SmoothAmplitudeByTime(p.time, 278985, 279286, 20, 0, 20);
-
-            if (p.time > 279286)
-            {
-                amplitude = 0;
-            }
-
-            float x = (float)Utility.SineWaveValue(amplitude, 1, p.progress);
-
             var pos = p.position;
 
-            pos.X += x;
+            var from = p.column.OriginPositionAt(p.time).X;
+            var to = p.column.ReceptorPositionAt(p.time).X;
 
-            return p.position;
+            // Remap progress from 0.3 to 1.0 range
+            var remappedProgress = Math.Max(0, Math.Min(1, (p.progress - 0.2f) / 0.8f));
+            var progress = OsbEasing.OutSine.Ease(remappedProgress);
+
+            var blend = from + (to - from) * progress;
+
+            pos.X = (float)blend;
+
+            if (p.time >= 279286 && p.isHoldBody)
+            {
+                var time = p.time;
+                var endtime = 281085;
+
+                // Calculate how far we are into the effect (0 to 1)
+                var effectProgress = Math.Min(1, (time - 279286) / (float)(endtime - 279286));
+                var prog = p.progress;
+
+                // Increase amplitude and frequency as we progress
+                var amplitude = 0f + (effectProgress * 100f); // Amplitude grows from 50 to 150
+                var frequency = 0f + (effectProgress * 8);      // Frequency grows from 2 to 10
+
+                // Add chaotic elements as the effect progresses
+                var chaosX = Math.Sin(prog * Math.PI * frequency) * amplitude;
+
+                // Smoothly transition Y chaos using easing function
+                var yFactor = Math.Max(0, Math.Min(1, (effectProgress - 0.3f) / 0.4f)); // Smooth ramp from 0.3 to 0.7
+                var chaosY = Math.Cos(prog * Math.PI * frequency * 1.7) * amplitude * 0.5 * yFactor;
+
+                // Smoothly transition noise using easing function
+                var noiseFactor = Math.Max(0, Math.Min(1, (effectProgress - 0.2f) / 0.3f)); // Smooth ramp from 0.2 to 0.5
+                var noiseX = Math.Sin(prog * Math.PI * 13) * amplitude * 0.3 * noiseFactor;
+
+                // Add rotation effect that increases with progress
+                var rotFactor = Math.Max(0, Math.Min(1, (effectProgress - 0.6f) / 0.4f)); // Smooth ramp from 0.6 to 1.0
+                var rotation = Math.Sin(prog * Math.PI * 5) * rotFactor * 0.1 * Math.PI;
+
+                // Apply a perlin-like noise for a more natural, chaotic movement
+                var perlinX = Math.Sin(prog * 7.3) * Math.Cos(effectProgress * 11.2) * amplitude * 0.2 * Math.Max(0, effectProgress - 0.4f) / 0.6f;
+                var perlinY = Math.Cos(prog * 5.7) * Math.Sin(effectProgress * 9.3) * amplitude * 0.15 * Math.Max(0, effectProgress - 0.5f) / 0.5f;
+
+                pos.X = (float)(blend + chaosX + noiseX + perlinX);
+                pos.Y += (float)(chaosY + perlinY);
+            }
+
+
+
+
+            return pos;
         }
     }
 }

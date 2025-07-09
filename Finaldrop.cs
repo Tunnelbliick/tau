@@ -581,7 +581,7 @@ namespace StorybrewScripts
             draw.setNoteMovementPrecision(0.5f);
             draw.setHoldRotationPrecision(0.01f);
             draw.setHoldMovementPrecision(0.5f);
-            draw.setHoldRotationDeadZone(0);
+            draw.setHoldRotationBlock(true);
             draw.drawViaEquation(endtime - 234229, NoteFunction, true);
 
             DrawInstance draw2 = new DrawInstance(CancellationToken, field2, 248526, scrollSpeed, updatesPerSecond, OsbEasing.None, false, fadeTime, fadeTime);
@@ -590,7 +590,7 @@ namespace StorybrewScripts
             draw2.setNoteMovementPrecision(0.5f);
             draw2.setHoldRotationPrecision(0.01f);
             draw2.setHoldMovementPrecision(0.5f);
-            draw2.setHoldRotationDeadZone(0);
+            draw2.setHoldRotationBlock(true);
             draw2.drawViaEquation(endtime - 248526, NoteFunction, true);
 
         }
@@ -816,7 +816,7 @@ namespace StorybrewScripts
                     time += gap;
                 }
 
-                path.StartLoopGroup(startTime, (int)((endTime - startTime) / beatLenght));
+                path.StartLoopGroup(startTime, (int)((endTime - startTime) / beatLenght) / 2);
                 path.Color(OsbEasing.InCubic, 0, beatLenght, new Color4(255, 0, 0, 1), new Color4(0, 0, 0, 1));
                 path.Color(OsbEasing.OutCubic, beatLenght, beatLenght * 2, new Color4(0, 0, 0, 1), new Color4(255, 0, 0, 1));
                 path.EndGroup();

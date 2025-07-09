@@ -14,7 +14,7 @@ namespace StorybrewScripts
 {
     public class Groovecoaster : StoryboardObjectGenerator
     {
-//        public override bool Multithreaded => false;
+        //        public override bool Multithreaded => false;
         static double startTime = 181221;
         static double endTime = 205995;
         public override void Generate()
@@ -34,6 +34,10 @@ namespace StorybrewScripts
             camera.PositionY.Add(startTime, 20);
             camera.PositionY.Add(182769, -50, EasingFunctions.SineOut);
             camera.PositionZ.Add(startTime, -125);
+            camera.PositionZ.Add(191963, -125);
+            camera.PositionZ.Add(195173, -160, EasingFunctions.SineOut);
+            camera.PositionZ.Add(200963, -160);
+            camera.PositionZ.Add(205801, -125, EasingFunctions.CubicOut);
 
             var path = new Path3D()
                 .AddPoint(new Vector3(0, -150, 0))
@@ -85,7 +89,7 @@ namespace StorybrewScripts
             // Use the path for your object animation
             Node3d pathNode = CreatePathFromInterpolatedPoints(interpolatedPath);
 
-            Node3d wireframe = CreateWireframePlane(scene, startTime, planeSize: 500, gridDetail: 20, position: new Vector3(0, 0, 0));
+            Node3d wireframe = CreateWireframePlane(scene, startTime, planeSize: 500, gridDetail: 15, position: new Vector3(0, 0, 0));
 
             // Add notes along the path
             Node3d notes = PlaceNotesAlongPath(interpolatedPath);
@@ -221,7 +225,40 @@ namespace StorybrewScripts
             scene.Add(receptors);
             scene.Add(notes);
 
-            scene.Generate(camera, GetLayer("3d"), startTime, endTime, Beatmap, 6);
+            scene.Generate(camera, GetLayer("3d"), startTime, endTime, Beatmap, 5);
+
+            Playfield field = new Playfield();
+            var duration = endTime - startTime; // the length the playfield is kept alive
+
+            // Playfield Scale
+            var width = 250f; // widht of the playfield / invert to flip
+            var height = -500; // height of the playfield / invert to flip -600 = downscroll | 600 = upscropll
+            var receptorWallOffset = 50f; // how big the boundary box for the receptor is 50 means it will be pushed away 50 units from the wall
+
+            // Note initilization Values
+            var sliderAccuracy = 45; // The Segment length for sliderbodies since they are rendered in slices 30 is default
+            var isColored = false; // This property is used if you want to color the notes by urself for effects. It does not swap if the snap coloring is used.
+
+            // Drawinstance Values
+            var updatesPerSecond = 100; // The amount of steps the rendring engine does to render out note and receptor positions
+            var scrollSpeed = 1200f; // The speed at which the Notes scroll
+            var fadeTime = 150; // The time notes will fade in
+
+            field.initilizePlayField(GetLayer("3d"), GetLayer("3d"), startTime, endTime, 0, 0, receptorWallOffset, Beatmap.OverallDifficulty, GetLayer("3d"), true);
+            field.initializeNotes(Beatmap.HitObjects.ToList(), Beatmap, isColored, sliderAccuracy);
+            field.moveFieldY(OsbEasing.None, startTime, startTime, -190);
+            field.ScaleReceptor(OsbEasing.None, startTime, startTime, new Vector2(0.5f), ColumnType.all);
+
+
+            DrawInstance draw = new DrawInstance(CancellationToken, field, startTime, scrollSpeed, updatesPerSecond, OsbEasing.None, false, fadeTime, fadeTime);
+            draw.hideHolds = true; // Hide holds
+            draw.hideNormalNotes = true; // Show normal notes
+            draw.drawViaEquation(endTime - startTime, NoteFunction, true);
+        }
+
+        public Vector2 NoteFunction(EquationParameters p)
+        {
+            return p.position;
         }
 
         // Class to represent a 3D path with timing and events
@@ -616,10 +653,14 @@ namespace StorybrewScripts
                 {
                     // Create a list to track rotations for this timegroup
                     List<double> rotations = new List<double>();
+                    List<double> addedPositions = new List<double>();
+                    List<double> possiblePositions = new List<double> { 128, 256, 384, 512 };
+
 
                     foreach (OsuHitObject hitObject in hitObjects)
                     {
                         double rotation = GetRotationFromPosition(hitObject.Position.X);
+                        addedPositions.Add(hitObject.Position.X);
                         if (rotation != double.NegativeInfinity) // Skip notes with invalid positions
                         {
                             rotations.Add(rotation);
@@ -628,6 +669,22 @@ namespace StorybrewScripts
                             Vector3 offset = GetOffsetFromRotation(rotation);
 
                             CreateNoteAtExactTimeWithOffset(noteNode, path, noteTime, rotation, offset, 500);
+                        }
+                    }
+
+                    possiblePositions.RemoveAll(pos => addedPositions.Contains(pos));
+
+                    foreach (double pos in possiblePositions)
+                    {
+                        double rotation = GetRotationFromPosition((float)pos);
+                        if (rotation != double.NegativeInfinity) // Skip notes with invalid positions
+                        {
+                            rotations.Add(rotation);
+
+                            // Create notes with initial offset based on rotation
+                            Vector3 offset = GetOffsetFromRotation(rotation);
+
+                            CreateNoteAtExactTimeWithOffset(noteNode, path, noteTime, rotation, offset, 500, true);
                         }
                     }
                 }
@@ -670,7 +727,7 @@ namespace StorybrewScripts
         }
 
         // Method to create a note with initial offset that merges to the path
-        private void CreateNoteAtExactTimeWithOffset(Node3d node, InterpolatedPath3D path, double noteTime, double rotation, Vector3 offset, double mergeDuration)
+        private void CreateNoteAtExactTimeWithOffset(Node3d node, InterpolatedPath3D path, double noteTime, double rotation, Vector3 offset, double mergeDuration, bool isMine = false)
         {
             // Find position on path for both initial placement and hit time
             Vector3 notePosition = GetPositionAtTime(path, noteTime);
@@ -678,16 +735,27 @@ namespace StorybrewScripts
             var noteType = GetNoteType(noteTime);
 
             // Create the note sprite
+            var spritePath = $"sb/sprites/{(isMine ? "mine" : noteType)}.png";
             Sprite3d note = new Sprite3d
             {
-                SpritePath = $"sb/sprites/{noteType}.png",
+                SpritePath = spritePath,
                 UseDistanceFade = false
             };
 
             // Set initial properties with offset
             note.SpriteScale.Add(startTime, 0.09f);
-            note.RotationMode = RotationMode.Fixed;
-            note.SpriteRotation.Add(startTime, rotation);
+
+            if (isMine)
+            {
+                note.RotationMode = RotationMode.UnitX;
+                note.Rotation.Add(startTime, 0);
+                note.Rotation.Add(endTime, 1);
+            }
+            else
+            {
+                note.RotationMode = RotationMode.Fixed;
+                note.SpriteRotation.Add(startTime, rotation);
+            }
 
             // Start position with offset
             note.PositionX.Add(startTime, notePosition.X + offset.X);
@@ -709,6 +777,11 @@ namespace StorybrewScripts
             note.Opacity.Add(noteTime, 0);
 
             note.CommandSplitThreshold = 250;
+
+            /*note.ConfigureGenerators((s) =>
+            {
+                s.PositionTolerance = 2;
+            });*/
 
             node.Add(note);
         }

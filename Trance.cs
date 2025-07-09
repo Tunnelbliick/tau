@@ -41,15 +41,17 @@ namespace StorybrewScripts
             var isColored = false; // This property is used if you want to color the notes by urself for effects. It does not swap if the snap coloring is used.
 
             // Drawinstance Values
-            var updatesPerSecond = 1000; // The amount of steps the rendring engine does to render out note and receptor positions
-            var scrollSpeed = 1800; // The speed at which the Notes scroll
+            var updatesPerSecond = 250; // The amount of steps the rendring engine does to render out note and receptor positions
+            var scrollSpeed = 1650; // The speed at which the Notes scroll
             var fadeTime = 0; // The time notes will fade in
 
             Playfield field = new Playfield();
+            //field.delta = 2;
             field.initilizePlayField(receptors, notes, starttime, endtime, width, -height, receptorWallOffset, Beatmap.OverallDifficulty);
             field.initializeNotes(Beatmap.HitObjects.ToList(), Beatmap.GetTimingPointAt(starttime).Bpm, Beatmap.GetTimingPointAt(starttime).Offset, isColored, sliderAccuracy);
 
             Playfield field2 = new Playfield();
+            //field2.delta = 2;
             field2.initilizePlayField(receptors, notes, starttime, endtime, width, height, receptorWallOffset, Beatmap.OverallDifficulty);
             field2.initializeNotes(Beatmap.HitObjects.ToList(), Beatmap.GetTimingPointAt(starttime).Bpm, Beatmap.GetTimingPointAt(starttime).Offset, isColored, sliderAccuracy);
 
@@ -84,10 +86,10 @@ namespace StorybrewScripts
 
             foreach (var col in field2.columns)
             {
-                col.Value.receptor.renderedSprite.Fade(92965, 0);
+                col.Value.receptor.renderedSprite.Fade(92964, 0);
             }
-            field2.fadeAt(92950, 0);
-            field2.fadeAt(92965, 0);
+            field2.fadeAt(92964, 0);
+            field2.fadeAt(starttime, 0);
 
             var fade = 0;
             var gap = 95479 - 93930;
@@ -144,11 +146,13 @@ namespace StorybrewScripts
             field2.MoveColumnRelativeX(OsbEasing.OutCubic, 117737, 118124, -field.getColumnWidth() * 3, ColumnType.four);
 
             DrawInstance draw = new DrawInstance(CancellationToken, field, 92898, scrollSpeed, updatesPerSecond, OsbEasing.None, false, fadeTime, fadeTime);
-            draw.setReceptorMovementPrecision(0.75f);
+            draw.setReceptorMovementPrecision(0.5f);
+            draw.customScale = true;
             draw.drawViaEquation(endtime - 92898, NoteFunction, true);
 
             DrawInstance draw2 = new DrawInstance(CancellationToken, field2, 92963, scrollSpeed, updatesPerSecond, OsbEasing.None, false, fadeTime, fadeTime);
-            draw2.setReceptorMovementPrecision(0.75f);
+            draw2.setReceptorMovementPrecision(0.5f);
+            draw2.customScale = true;
             draw2.drawViaEquation(endtime - 92963, NoteFunction, true);
         }
 
@@ -160,7 +164,55 @@ namespace StorybrewScripts
         {
             var pos = p.position; // The current position of the note
 
+            // Replace the existing progress check with a threshold-based approach
+            float squashThreshold = 0.5f; // Exact progress threshold
+            float squashTolerance = 0.001f; // Small tolerance value to avoid floating-point precision issues
 
+            if (Math.Abs(p.progress - squashThreshold) <= squashTolerance)
+            {
+                var scale = new Vector2(0.5f);
+                var adjustedScale = new Vector2(scale.X, scale.Y);
+                switch (p.column.type)
+                {
+                    case ColumnType.one:
+                        adjustedScale.X = 0;
+                        break;
+                    case ColumnType.two:
+                        adjustedScale.Y = 0;
+                        break;
+                    case ColumnType.three:
+                        adjustedScale.Y = 0;
+                        break;
+                    case ColumnType.four:
+                        adjustedScale.X = 0;
+                        break;
+                }
+
+                p.note.noteSprite.ScaleVec(OsbEasing.InSine, p.time, p.time + 100, scale, adjustedScale);
+                p.note.noteSprite.ScaleVec(OsbEasing.OutSine, p.time + 100, p.time + 200, adjustedScale, scale);
+            }
+
+            if (p.progress < 0.5f)
+            {
+                pos.X = p.column.OriginPositionAt(p.time).X;
+            }
+            else if (p.progress >= 0.5f && p.progress <= 0.6f)
+            {
+                // Smoothly lerp between originPos and normal position
+                float lerpFactor = (p.progress - 0.5f) / (0.6f - 0.5f); // Normalize progress to [0, 1]
+                float eased = (float)OsbEasing.OutSine.Ease(lerpFactor); // Apply easing
+                Vector2 originPos = p.column.OriginPositionAt(p.time);
+                Vector2 receptorPos = p.column.ReceptorPositionAt(p.time);
+                originPos.Y = p.position.Y; // Ensure Y position matches receptor
+                receptorPos.Y = p.position.Y; // Ensure Y position matches receptor
+                pos = Vector2.Lerp(originPos, receptorPos, eased);
+            }
+            else
+            {
+                pos.X = p.column.ReceptorPositionAt(p.time).X;
+            }
+
+            /*
             if (p.progress >= 0.6f && p.time > 93350)
             {
                 lock (_lock)
@@ -172,7 +224,7 @@ namespace StorybrewScripts
                         processedSprites.Add(spriteId);
 
                         // Check if the receptor's opacity is not zero
-                        if (p.column.receptor.renderedSprite.OpacityAt(p.time - 250) > 0 && p.column.receptor.renderedSprite.OpacityAt(p.time + 250) > 0)
+                        /*if (p.column.receptor.renderedSprite.OpacityAt(p.time - 250) > 0 && p.column.receptor.renderedSprite.OpacityAt(p.time + 250) > 0)
                         {
                             // Fade out the sprite and fade it back in
                             p.sprite.Fade(OsbEasing.InSine, p.time - 250, p.time, p.sprite.OpacityAt(p.time), 0);
@@ -181,20 +233,13 @@ namespace StorybrewScripts
                         // Fade out the sprite and fade it back in
                     }
                 }
-            }
+            }*/
 
             // Calculate the offset using a sine wave
-            var offset = (float)Utility.SineWaveValue(Utility.SmoothAmplitudeByTime(p.time, 92866, 93737, 0, 40, 40), 1, p.progress);
+            var offset = (float)Utility.SineWaveValue(Utility.SmoothAmplitudeByTime(p.time, 92866, 93737, 0, 65, 65), 1, p.progress);
 
             // Adjust the X position based on progress
-            if (p.progress < 0.6f)
-            {
-                pos.X = p.column.OriginPositionAt(p.time).X + offset;
-            }
-            else
-            {
-                pos.X = p.column.ReceptorPositionAt(p.time).X + offset;
-            }
+            pos.X += offset;
 
             return pos;
         }

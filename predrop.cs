@@ -1,5 +1,6 @@
 using OpenTK;
 using OpenTK.Graphics;
+using StorybrewCommon.Animations;
 using StorybrewCommon.Mapset;
 using StorybrewCommon.Scripting;
 using StorybrewCommon.Storyboarding;
@@ -53,6 +54,7 @@ namespace StorybrewScripts
 
             var localtime = 43414;
             var gap = 43801 - 43414;
+            flipColumn(field, localtime, gap, OsbEasing.OutElasticQuarter, ColumnType.all);
             field.ScaleReceptor(OsbEasing.None, localtime, localtime, new Vector2(2f), ColumnType.all);
             field.ScaleOrigin(OsbEasing.None, localtime, localtime, new Vector2(0.25f), ColumnType.all);
 
@@ -77,7 +79,9 @@ namespace StorybrewScripts
             field.MoveOriginRelative(OsbEasing.None, localtime - 10, localtime + gap - 10, new Vector2(-colWidth / 4, 0), ColumnType.four);
             field.MoveOriginRelative(OsbEasing.OutCubic, localtime, localtime + gap, new Vector2(colWidth / 4, 0), ColumnType.four);
 
+
             localtime = 44188;
+            flipColumn(field, localtime, gap, OsbEasing.OutElasticQuarter, ColumnType.all);
             field.ScaleOrigin(OsbEasing.None, localtime, localtime, new Vector2(3f), ColumnType.all);
             field.ScaleReceptor(OsbEasing.None, localtime, localtime, new Vector2(0.25f), ColumnType.all);
 
@@ -103,6 +107,7 @@ namespace StorybrewScripts
             field.MoveOriginRelative(OsbEasing.OutCubic, localtime, localtime + gap, new Vector2(-colWidth, 0), ColumnType.four);
 
             localtime = 44963;
+            flipColumn(field, localtime, gap, OsbEasing.OutElasticQuarter, ColumnType.all);
             field.ScaleReceptor(OsbEasing.None, localtime, localtime, new Vector2(2f), ColumnType.all);
             field.ScaleOrigin(OsbEasing.None, localtime, localtime, new Vector2(0.25f), ColumnType.all);
 
@@ -127,7 +132,13 @@ namespace StorybrewScripts
             field.MoveOriginRelative(OsbEasing.None, localtime - 10, localtime + gap - 10, new Vector2(-colWidth / 4, 0), ColumnType.four);
             field.MoveOriginRelative(OsbEasing.OutCubic, localtime, localtime + gap, new Vector2(colWidth / 4, 0), ColumnType.four);
 
+            flipColumn(field, 45350, gap, OsbEasing.OutElasticQuarter, ColumnType.one);
+            flipColumn(field, 45350, gap, OsbEasing.OutElasticQuarter, ColumnType.two);
+            flipColumn(field, 45543, gap, OsbEasing.OutElasticQuarter, ColumnType.three);
+            flipColumn(field, 45543, gap, OsbEasing.OutElasticQuarter, ColumnType.four);
+
             localtime = 45737;
+            flipColumn(field, localtime, gap, OsbEasing.OutElasticQuarter, ColumnType.all);
             field.ScaleOrigin(OsbEasing.None, localtime, localtime, new Vector2(3f), ColumnType.all);
             field.ScaleReceptor(OsbEasing.None, localtime, localtime, new Vector2(0.25f), ColumnType.all);
 
@@ -153,6 +164,7 @@ namespace StorybrewScripts
             field.MoveOriginRelative(OsbEasing.OutCubic, localtime, localtime + gap, new Vector2(-colWidth, 0), ColumnType.four);
 
             localtime = 46511;
+            flipColumn(field, localtime, gap, OsbEasing.OutElasticQuarter, ColumnType.all);
             field.ScaleReceptor(OsbEasing.None, localtime, localtime, new Vector2(2f), ColumnType.all);
             field.ScaleOrigin(OsbEasing.None, localtime, localtime, new Vector2(0.25f), ColumnType.all);
 
@@ -178,6 +190,7 @@ namespace StorybrewScripts
             field.MoveOriginRelative(OsbEasing.OutCubic, localtime, localtime + gap, new Vector2(colWidth / 4, 0), ColumnType.four);
 
             localtime = 47285;
+            flipColumn(field, localtime, gap, OsbEasing.OutElasticQuarter, ColumnType.all);
             field.ScaleOrigin(OsbEasing.None, localtime, localtime, new Vector2(3f), ColumnType.all);
             field.ScaleReceptor(OsbEasing.None, localtime, localtime, new Vector2(0.25f), ColumnType.all);
 
@@ -203,6 +216,7 @@ namespace StorybrewScripts
             field.MoveOriginRelative(OsbEasing.OutCubic, localtime, localtime + gap, new Vector2(-colWidth, 0), ColumnType.four);
 
             localtime = 48059;
+            flipColumn(field, localtime, gap, OsbEasing.OutElasticQuarter, ColumnType.all);
             field.ScaleReceptor(OsbEasing.None, localtime, localtime, new Vector2(2f), ColumnType.all);
             field.ScaleOrigin(OsbEasing.None, localtime, localtime, new Vector2(0.25f), ColumnType.all);
 
@@ -235,7 +249,7 @@ namespace StorybrewScripts
             field.RotatePlayFieldStatic(OsbEasing.InOutCubic, 46511, 46511, Math.PI * 2 / 6);
 
             field.RotatePlayFieldStatic(OsbEasing.InOutCubic, 48059, 49608, Math.PI * 2);
-            field.moveFieldY(OsbEasing.InOutCubic, 48059, 49608, 240 - 50f);
+            field.moveFieldY(OsbEasing.InOutCubic, 48059, 49608, 240 - 52f);
 
             field2.moveFieldY(OsbEasing.InOutCubic, 48059, 49608, 240 - 50f);
 
@@ -274,24 +288,165 @@ namespace StorybrewScripts
                 field2.MoveOriginRelative(OsbEasing.InSine, localstart + dura / 2, localstart + dura, new Vector2(halfwidth / 2, 0), ColumnType.three);
                 field2.MoveOriginRelative(OsbEasing.InSine, localstart + dura / 2, localstart + dura, new Vector2(colWidth / 2, 0), ColumnType.four);
                 localstart += dura;
-                dura *= .75;
+                dura *= 0.75;
             }
 
+            addLissajousFloating(field, 43414, 49608, 1.5f);
+            addLissajousFloating(field2, 49608, endtime, 1.5f);
 
 
             field2.MoveOriginRelative(OsbEasing.OutSine, 54253, 55801, new Vector2(0, -height), ColumnType.all);
             field2.Resize(OsbEasing.OutExpo, 55801, 55801 + 350, width, height * 2);
             field2.moveFieldY(OsbEasing.OutExpo, 55801, 55801 + 350, -240);
 
-            DrawInstance draw = new DrawInstance(CancellationToken, field, 43414, scrollSpeed, updatesPerSecond, OsbEasing.None, true, 0, fadeTime);
+            DrawInstance draw = new DrawInstance(CancellationToken, field, 43221, scrollSpeed, updatesPerSecond, OsbEasing.None, true, fadeTime, fadeTime);
             draw.setReceptorMovementPrecision(0.25f);
             draw.setNoteRotationPrecision(0.001f);
-            draw.drawViaEquation(49608 - 43414, NoteFunction, true);
+            draw.drawViaEquation(49608 - 43221, NoteFunction, true);
 
-            DrawInstance draw2 = new DrawInstance(CancellationToken, field2, 49608, scrollSpeed, updatesPerSecond, OsbEasing.None, false, 0, fadeTime);
+            DrawInstance draw2 = new DrawInstance(CancellationToken, field2, 49608, scrollSpeed, updatesPerSecond, OsbEasing.None, false, fadeTime, fadeTime);
             draw2.setReceptorMovementPrecision(0.25f);
             draw2.setNoteRotationPrecision(0.001f);
             draw2.drawViaEquation(endtime - 49608, NoteFunction, true);
+        }
+
+        public void flipColumn(Playfield field, double starttime, double duration, OsbEasing easing, ColumnType type)
+        {
+            foreach (Column currentColumn in field.columns.Values)
+            {
+
+                if (currentColumn.type == type || type == ColumnType.all)
+                {
+
+                    Vector2 receptorPos = currentColumn.ReceptorPositionAt(starttime + duration);
+                    Vector2 originPos = currentColumn.OriginPositionAt(starttime + duration);
+                    Vector2 center = new Vector2(427, 240);
+
+                    // Calculate the change needed to flip the positions
+                    Vector2 changeReceptorPos = (center - receptorPos) * 2;
+                    Vector2 changeOriginPos = (center - originPos) * 2;
+
+                    currentColumn.receptor.MoveReceptorRelativeY(easing, starttime, starttime + duration, changeReceptorPos.Y);
+                    currentColumn.origin.MoveOriginRelativeY(easing, starttime, starttime + duration, changeOriginPos.Y);
+                }
+
+            }
+        }
+
+        private void addLissajousFloating(Playfield field, double startTime, double endTime, float intensity)
+        {
+            double segmentDuration = 25; // increased from 25ms for better performance
+
+            // Track the total accumulated movement to ensure return to origin
+            Vector2 totalOffset1 = new Vector2(0, 0);
+            Vector2 totalOffset2 = new Vector2(0, 0);
+            Vector2 totalOffset3 = new Vector2(0, 0);
+            Vector2 totalOffset4 = new Vector2(0, 0);
+
+            for (double t = startTime; t < endTime; t += segmentDuration)
+            {
+                double duration = Math.Min(segmentDuration, endTime - t);
+                double phase = (t - startTime) / 100.0; // phase in seconds
+
+                // Custom easing function applied to the sine waves themselves
+                float progress = (float)((t - startTime) / (endTime - startTime));
+                if (startTime < 49608)
+                {
+                    progress = 0;
+                }
+                float easedIntensity = intensity * 1f - (float)OsbEasing.OutSine.Ease(progress);
+
+                // Calculate new position vectors with eased intensity
+                Vector2 newPos1 = new Vector2(
+                    (float)(Math.Sin(phase * 0.8) * easedIntensity * 0.8),
+                    (float)(Math.Sin(phase * 1.2 + 1.5) * easedIntensity * 0.6)
+                );
+
+                Vector2 newPos2 = new Vector2(
+                    (float)(Math.Sin(phase * 1.0 + 0.4) * easedIntensity * 0.7),
+                    (float)(Math.Sin(phase * 0.9 + 3.0) * easedIntensity * 0.9)
+                );
+
+                Vector2 newPos3 = new Vector2(
+                    (float)(Math.Sin(phase * 1.1 + 2.1) * easedIntensity * 0.9),
+                    (float)(Math.Sin(phase * 1.3 + 0.8) * easedIntensity * 0.7)
+                );
+
+                Vector2 newPos4 = new Vector2(
+                    (float)(Math.Sin(phase * 0.7 + 1.2) * easedIntensity * 0.8),
+                    (float)(Math.Sin(phase * 1.0 + 2.5) * easedIntensity * 0.8)
+                );
+
+                // Calculate relative movement from current position
+                Vector2 relativeMovement1 = newPos1 - totalOffset1;
+                Vector2 relativeMovement2 = newPos2 - totalOffset2;
+                Vector2 relativeMovement3 = newPos3 - totalOffset3;
+                Vector2 relativeMovement4 = newPos4 - totalOffset4;
+
+                // Update total offsets
+                totalOffset1 = newPos1;
+                totalOffset2 = newPos2;
+                totalOffset3 = newPos3;
+                totalOffset4 = newPos4;
+
+                // Apply movements (with OsbEasing.None since you're handling easing yourself)
+                field.MoveColumnRelative(
+                    OsbEasing.None,
+                    t, t + duration,
+                    relativeMovement1,
+                    ColumnType.one
+                );
+
+                field.MoveColumnRelative(
+                    OsbEasing.None,
+                    t, t + duration,
+                    relativeMovement2,
+                    ColumnType.two
+                );
+
+                field.MoveColumnRelative(
+                    OsbEasing.None,
+                    t, t + duration,
+                    relativeMovement3,
+                    ColumnType.three
+                );
+
+                field.MoveColumnRelative(
+                    OsbEasing.None,
+                    t, t + duration,
+                    relativeMovement4,
+                    ColumnType.four
+                );
+
+                // Special handling for the last segment to ensure return to origin
+                if (t + segmentDuration >= endTime)
+                {
+                    field.MoveColumnRelative(
+                        OsbEasing.None,
+                        t + duration, endTime,
+                        new Vector2(-totalOffset1.X, -totalOffset1.Y),
+                        ColumnType.one
+                    );
+                    field.MoveColumnRelative(
+                        OsbEasing.None,
+                        t + duration, endTime,
+                        new Vector2(-totalOffset2.X, -totalOffset2.Y),
+                        ColumnType.two
+                    );
+                    field.MoveColumnRelative(
+                        OsbEasing.None,
+                        t + duration, endTime,
+                        new Vector2(-totalOffset3.X, -totalOffset3.Y),
+                        ColumnType.three
+                    );
+                    field.MoveColumnRelative(
+                        OsbEasing.None,
+                        t + duration, endTime,
+                        new Vector2(-totalOffset4.X, -totalOffset4.Y),
+                        ColumnType.four
+                    );
+                }
+            }
         }
 
         // NoteFunction is used to manipulate the pathway and a bunch of other things the note should do on their way to the receptor

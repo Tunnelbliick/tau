@@ -14,7 +14,7 @@ namespace StorybrewScripts
 {
     public class Slowjam : StoryboardObjectGenerator
     {
-//        public override bool Multithreaded => false;
+        //        public override bool Multithreaded => false;
         Playfield field = new Playfield();
 
         Playfield field2 = new Playfield();
@@ -274,16 +274,17 @@ namespace StorybrewScripts
 
             FakeNoteFadeIn(ColumnType.three, 207543);
             FakeNoteFadeIn(ColumnType.four, 207543);
-            FakeNoteFadeIn(ColumnType.two, 207737, 2);
-            FakeNoteFadeIn(ColumnType.one, 207737, 2);
+            FakeNoteFadeIn(ColumnType.three, 207737, 2);
+            FakeNoteFadeIn(ColumnType.four, 207737, 2);
+            FakeNoteFadeIn(ColumnType.one, 207930);
             FakeNoteFadeIn(ColumnType.four, 207930);
-            FakeNoteFadeIn(ColumnType.three, 208027, 4);
             FakeNoteFadeIn(ColumnType.two, 208124, 2);
             FakeNoteFadeIn(ColumnType.one, 208221, 4);
-            FakeNoteFadeIn(ColumnType.four, 208317);
-            FakeNoteFadeIn(ColumnType.three, 208414, 4);
+            FakeNoteFadeIn(ColumnType.three, 208317);
+            FakeNoteFadeIn(ColumnType.one, 208414, 4);
             FakeNoteFadeIn(ColumnType.two, 208511, 2);
-            FakeNoteFadeIn(ColumnType.one, 208608, 4);
+            FakeNoteFadeIn(ColumnType.one, 208704);
+            FakeNoteFadeIn(ColumnType.four, 208704);
 
             DrawInstance draw = new DrawInstance(CancellationToken, field, 205995, scrollSpeed, updatesPerSecond, OsbEasing.None, false, fadeTime, fadeTime);
             draw.setReceptorMovementPrecision(0.25f);
@@ -364,7 +365,7 @@ namespace StorybrewScripts
         {
             if (p.time > 207156 && p.progress == 0)
             {
-                p.sprite.Additive(207156);
+                p.sprite.Additive(p.note.renderStart);
             }
 
             return p.position;

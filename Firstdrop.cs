@@ -495,13 +495,14 @@ namespace StorybrewScripts
             //field.Resize(OsbEasing.OutSine, 66640, 66640, -width, height * 2);
 
             DrawInstance draw = new DrawInstance(CancellationToken, field, starttime + 50, scrollSpeed, updatesPerSecond, OsbEasing.None, false, fadeTime, fadeTime);
-            draw.setReceptorMovementPrecision(0f);
-            draw.setNoteMovementPrecision(0f);
+            draw.setReceptorMovementPrecision(0.25f);
+            draw.setNoteMovementPrecision(0.25f);
             draw.drawViaEquation(67414 - starttime + 50, NoteFunction, true);
 
             DrawInstance draw2 = new DrawInstance(CancellationToken, field2, 55705 + 10, scrollSpeed, updatesPerSecond, OsbEasing.None, false, fadeTime, fadeTime);
-            draw2.setReceptorMovementPrecision(0f);
-            draw2.setNoteMovementPrecision(0f);
+            draw2.setReceptorMovementPrecision(0.25f);
+            draw2.setNoteMovementPrecision(0.25f);
+            draw2.setNoteRotationPrecision(0f);
             draw2.drawViaEquation(67414 - 55705, NoteFunction, true);
         }
 

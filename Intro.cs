@@ -85,11 +85,13 @@ namespace StorybrewScripts
 
             SpinOutAnimation(field, 5479, 6640, width, height, 32, 1.7);
 
+            field.Resize(OsbEasing.OutCubic, 7608, 7801, width, height);
+
             field.RotateReceptor(OsbEasing.OutSine, 10898, 11092, .3, CenterType.receptor);
             field.RotateReceptor(OsbEasing.InSine, 11092, 11575, -.33, CenterType.receptor);
-            field.Resize(OsbEasing.OutQuad, 10898, 11575, width, height);
+            field.Resize(OsbEasing.OutQuad, 10898, 11575, -width, height);
 
-            SpinOutAnimation(field, 11672, 12834, width, height, 50, 1.8);
+            SpinOutAnimation(field, 11672, 12834, width, height, 32, 1.7);
 
             field.ScaleColumn(OsbEasing.None, 4704, 4704, new Vector2(2f), ColumnType.all);
             field.ScaleColumn(OsbEasing.OutCubic, 4704, 5479, new Vector2(0.5f), ColumnType.all);
@@ -110,10 +112,7 @@ namespace StorybrewScripts
 
             ReceptorBump(field, 7221, 2, true);
 
-            FlipPlayField(field, 7801, 8963, width, height, 100, 2.5f);
-
-            field.ScaleColumn(OsbEasing.None, 8575, 8575, new Vector2(2f), ColumnType.all);
-            field.ScaleColumn(OsbEasing.OutCubic, 8575, 9156, new Vector2(0.5f), ColumnType.all);
+            FlipPlayField(field, 7801, 8963, width, height, 150, 2.1f);
 
             field.MoveReceptorRelative(OsbEasing.None, 9156, 9156, new Vector2(-150, 0), ColumnType.all);
             field.MoveReceptorRelative(OsbEasing.OutCubic, 9156, 9156 + 500, new Vector2(150, 0), ColumnType.all);
@@ -133,6 +132,8 @@ namespace StorybrewScripts
 
             ReceptorBump(field, 12834, 2, true);
             ReceptorBump(field, 13414, 2, true);
+
+            field.Resize(OsbEasing.OutCubic, 13801, 13995, width, height);
 
             field.MoveReceptorRelative(OsbEasing.None, 12834, 12834, new Vector2(150, 0), ColumnType.all);
             field.MoveReceptorRelative(OsbEasing.OutSine, 12834, 12834 + 500, new Vector2(-150, 0), ColumnType.all);
@@ -425,20 +426,20 @@ namespace StorybrewScripts
 
                     if (i % 2 == 0)
                     {
-                        field.ScaleReceptor(OsbEasing.InSine, currentTime, currentTime + duration / 2, new Vector2(1f), col.type);
-                        field.ScaleOrigin(OsbEasing.InSine, currentTime, currentTime + duration / 2, new Vector2(0.25f), col.type);
+                        field.ScaleReceptor(OsbEasing.OutSine, currentTime, currentTime + duration / 2, new Vector2(1f), col.type);
+                        field.ScaleOrigin(OsbEasing.OutSine, currentTime, currentTime + duration / 2, new Vector2(0.25f), col.type);
 
-                        field.ScaleReceptor(OsbEasing.OutSine, currentTime + duration / 2, currentTime + duration, new Vector2(0.5f), col.type);
-                        field.ScaleOrigin(OsbEasing.OutSine, currentTime + duration / 2, currentTime + duration, new Vector2(0.5f), col.type);
+                        field.ScaleReceptor(OsbEasing.InSine, currentTime + duration / 2, currentTime + duration, new Vector2(0.5f), col.type);
+                        field.ScaleOrigin(OsbEasing.InSine, currentTime + duration / 2, currentTime + duration, new Vector2(0.5f), col.type);
                     }
                     else
                     {
                         colWidth = -colWidth;
-                        field.ScaleReceptor(OsbEasing.InSine, currentTime, currentTime + duration / 2, new Vector2(0.25f), col.type);
-                        field.ScaleOrigin(OsbEasing.InSine, currentTime, currentTime + duration / 2, new Vector2(1f), col.type);
+                        field.ScaleReceptor(OsbEasing.OutSine, currentTime, currentTime + duration / 2, new Vector2(0.25f), col.type);
+                        field.ScaleOrigin(OsbEasing.OutSine, currentTime, currentTime + duration / 2, new Vector2(1f), col.type);
 
-                        field.ScaleReceptor(OsbEasing.OutSine, currentTime + duration / 2, currentTime + duration, new Vector2(0.5f), col.type);
-                        field.ScaleOrigin(OsbEasing.OutSine, currentTime + duration / 2, currentTime + duration, new Vector2(0.5f), col.type);
+                        field.ScaleReceptor(OsbEasing.InSine, currentTime + duration / 2, currentTime + duration, new Vector2(0.5f), col.type);
+                        field.ScaleOrigin(OsbEasing.InSine, currentTime + duration / 2, currentTime + duration, new Vector2(0.5f), col.type);
                     }
 
                     switch (col.type)
@@ -456,14 +457,14 @@ namespace StorybrewScripts
                             break;
                     }
 
-                    col.receptor.MoveReceptorRelativeX(OsbEasing.InSine, currentTime, currentTime + duration / 2, colWidth);
-                    col.receptor.MoveReceptorRelativeX(OsbEasing.OutSine, currentTime + duration / 2, currentTime + duration, -colWidth);
+                    col.receptor.MoveReceptorRelativeX(OsbEasing.OutSine, currentTime, currentTime + duration / 2, colWidth);
+                    col.receptor.MoveReceptorRelativeX(OsbEasing.InSine, currentTime + duration / 2, currentTime + duration, -colWidth);
 
-                    col.origin.MoveOriginRelativeX(OsbEasing.InSine, currentTime, currentTime + duration / 2, -colWidth);
-                    col.origin.MoveOriginRelativeX(OsbEasing.OutSine, currentTime + duration / 2, currentTime + duration, colWidth);
+                    col.origin.MoveOriginRelativeX(OsbEasing.OutSine, currentTime, currentTime + duration / 2, -colWidth);
+                    col.origin.MoveOriginRelativeX(OsbEasing.InSine, currentTime + duration / 2, currentTime + duration, colWidth);
 
-                    col.receptor.MoveReceptorRelativeY(OsbEasing.InOutSine, currentTime, currentTime + duration, changeReceptorPos.Y);
-                    col.origin.MoveOriginRelativeY(OsbEasing.InOutSine, currentTime, currentTime + duration, changeOriginPos.Y);
+                    col.receptor.MoveReceptorRelativeY(OsbEasing.OutSine, currentTime, currentTime + duration, changeReceptorPos.Y);
+                    col.origin.MoveOriginRelativeY(OsbEasing.OutSine, currentTime, currentTime + duration, changeOriginPos.Y);
                 }
 
                 currentTime += duration;
@@ -477,25 +478,30 @@ namespace StorybrewScripts
         public Vector2 NoteFunction(EquationParameters p)
         {
 
-            if ((p.time >= 5479 && p.time <= 6640) || (p.time >= 11672 && p.time <= 12834))
+            if (((p.time >= 5479 && p.time <= 6640) || (p.time >= 11672 && p.time <= 12834)) && p.isHoldBody == false)
             {
                 lock (_lock)
                 {
-                    StoryboardLayer layer = p.column.receptor.layer;
-                    String notePath = p.note.noteSprite.TexturePath;
-
-                    var shadow = layer.CreateSprite(notePath, OsbOrigin.Centre, p.lastPosition);
-                    shadow.ScaleVec(p.time, p.column.receptor.ScaleAt(p.time));
-                    shadow.Fade(p.time, 1);
-                    if (p.time <= 6640)
+                    if (p.progress < 0.99)
                     {
-                        shadow.Fade(6640, 0);
-                        shadow.Rotate(OsbEasing.None, p.time, p.time + 1000, p.column.receptor.RotationAt(p.time), p.column.receptor.RotationAt(p.time) + Math.PI);
-                    }
-                    else
-                    {
-                        shadow.Fade(12834, 0);
-                        shadow.Rotate(OsbEasing.None, p.time, p.time + 1000, p.column.receptor.RotationAt(p.time), p.column.receptor.RotationAt(p.time) + Math.PI);
+                        StoryboardLayer layer = p.column.receptor.layer;
+                        String notePath = p.note.noteSprite.TexturePath;
+                        if (p.time < 6592)
+                        {
+                            var shadow = layer.CreateSprite(notePath, OsbOrigin.Centre, p.lastPosition);
+                            shadow.ScaleVec(p.time, p.column.receptor.ScaleAt(p.time));
+                            shadow.Fade(p.time, 1);
+                            shadow.Fade(6640, 0);
+                            shadow.Rotate(OsbEasing.None, p.time, p.time + 1000, p.column.receptor.RotationAt(p.time), p.column.receptor.RotationAt(p.time) + Math.PI);
+                        }
+                        else if (p.time > 7221 && p.time < 12785)
+                        {
+                            var shadow = layer.CreateSprite(notePath, OsbOrigin.Centre, p.lastPosition);
+                            shadow.ScaleVec(p.time, p.column.receptor.ScaleAt(p.time));
+                            shadow.Fade(p.time, 1);
+                            shadow.Fade(12834, 0);
+                            shadow.Rotate(OsbEasing.None, p.time, p.time + 1000, p.column.receptor.RotationAt(p.time), p.column.receptor.RotationAt(p.time) + Math.PI);
+                        }
                     }
 
                 }

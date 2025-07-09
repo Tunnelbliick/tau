@@ -15,7 +15,7 @@ namespace StorybrewScripts
 {
     public class Proxywall : StoryboardObjectGenerator
     {
-//        public override bool Multithreaded => false;
+        //        public override bool Multithreaded => false;
         float farScale = 0.075f;
         float closeScale = 0.75f;
         float height = 500f; // height of the playfield / invert to flip -600 = downscroll | 600 = upscropll
@@ -45,7 +45,7 @@ namespace StorybrewScripts
             var isColored = false; // This property is used if you want to color the notes by urself for effects. It does not swap if the snap coloring is used.
 
             // Drawinstance Values
-            var updatesPerSecond = 150; // The amount of steps the rendring engine does to render out note and receptor positions
+            var updatesPerSecond = 500; // The amount of steps the rendring engine does to render out note and receptor positions
             var scrollSpeed = 1200f; // The speed at which the Notes scroll
             var fadeTime = 150; // The time notes will fade in
 
@@ -61,8 +61,21 @@ namespace StorybrewScripts
 
             for (int i = 0; i <= 7; i++)
             {
+                if (i == 0)
+                {
+                    starttime = 65866 - 1000;
+                }
+                else
+                {
+                    starttime = 66640;
+
+
+                }
+
                 Playfield field = new Playfield();
+                //field.delta = 5;
                 field.initilizePlayField(receptors, notes, starttime, endtime, width, height, receptorWallOffset, Beatmap.OverallDifficulty);
+                field.noteStart = 67414;
                 field.initializeNotes(Beatmap.HitObjects.ToList(), Beatmap.GetTimingPointAt(starttime).Bpm, Beatmap.GetTimingPointAt(starttime).Offset, isColored, sliderAccuracy);
 
                 columns.Add(field.columns[ColumnType.four]);
@@ -182,11 +195,10 @@ namespace StorybrewScripts
             foreach (var field in playfields)
             {
                 DrawInstance draw = new DrawInstance(CancellationToken, field, starttime + 10, scrollSpeed, updatesPerSecond, OsbEasing.None, false, fadeTime, fadeTime);
-                draw.setReceptorMovementPrecision(1f);
-                draw.setReceptorScalePrecision(.05f);
+                draw.setReceptorMovementPrecision(1.5f);
+                draw.setReceptorScalePrecision(.06f);
                 draw.setNoteMovementPrecision(1f);
-                //draw.setNoteScalePrecision(0.5f);
-                //draw.CommandSplitThreshold = 50;
+                draw.setNoteScalePrecision(0.05f);
                 draw.drawViaEquation(duration - 10, NoteFunction, true);
             }
         }
@@ -200,41 +212,54 @@ namespace StorybrewScripts
             // Check if note is at screen edge boundaries
             if (p.time >= 68575 && p.time <= 79414) // Time period when scrolling animations are active
             {
-                float screenLeft = OsuHitObject.WidescreenStoryboardBounds.Left - 100;
-                float screenRight = OsuHitObject.WidescreenStoryboardBounds.Right + 100;
+                /* float screenLeft = OsuHitObject.WidescreenStoryboardBounds.Left - 100;
+                 float screenRight = OsuHitObject.WidescreenStoryboardBounds.Right + 100;
 
-                // Detect if note is at or very near screen edge
-                bool atLeftEdge = p.position.X <= screenLeft + 40;
-                bool atRightEdge = p.position.X >= screenRight - 40;
+                 // Detect if note is at or very near screen edge
+                 bool atLeftEdge = p.position.X <= screenLeft + 40;
+                 bool atRightEdge = p.position.X >= screenRight - 40;
 
-                if (atLeftEdge || atRightEdge)
+                 if (atLeftEdge || atRightEdge)
+                 {
+                     lock (_noteLock)
+                     {
+                         // Don't process the same note too frequently
+                         if (!_lastTransitionTime.ContainsKey(p.note) ||
+                             p.time - _lastTransitionTime[p.note] > 20)
+                         {
+                             // Add to transitioning collection
+                             _transitioningNotes.Add(p.note);
+                             _lastTransitionTime[p.note] = p.time;
+
+                             // Fade out the note
+                             p.note.noteSprite.Fade(p.time - 25, 0);
+                         }
+                     }
+                 }
+                 else if (p.position.X > screenLeft + 50 && p.position.X < screenRight - 50)
+                 {
+                     // Note is safely away from edges, check if it needs to be faded back in
+                     lock (_noteLock)
+                     {
+                         if (_transitioningNotes.Contains(p.note))
+                         {
+                             // Fade the note back in
+                             p.note.noteSprite.Fade(p.time + 25, 1);
+                             _transitioningNotes.Remove(p.note);
+                         }
+                     }
+                 }*/
+                lock (_noteLock)
                 {
-                    lock (_noteLock)
-                    {
-                        // Don't process the same note too frequently
-                        if (!_lastTransitionTime.ContainsKey(p.note) ||
-                            p.time - _lastTransitionTime[p.note] > 20)
-                        {
-                            // Add to transitioning collection
-                            _transitioningNotes.Add(p.note);
-                            _lastTransitionTime[p.note] = p.time;
+                    float receptorOpcacity = p.column.receptor.renderedSprite.OpacityAt(p.time);
+                    float currentOpacity = p.note.noteSprite.OpacityAt(p.time);
 
-                            // Fade out the note
-                            p.note.noteSprite.Fade(p.time - 25, 0);
-                        }
-                    }
-                }
-                else if (p.position.X > screenLeft + 50 && p.position.X < screenRight - 50)
-                {
-                    // Note is safely away from edges, check if it needs to be faded back in
-                    lock (_noteLock)
+                    if (currentOpacity != receptorOpcacity && p.progress > 0.08f)
                     {
-                        if (_transitioningNotes.Contains(p.note))
-                        {
-                            // Fade the note back in
-                            p.note.noteSprite.Fade(p.time + 25, 1);
-                            _transitioningNotes.Remove(p.note);
-                        }
+                        if (receptorOpcacity == 1)
+                            p.note.noteSprite.Fade(p.time, receptorOpcacity);
+                        else
+                            p.note.noteSprite.Fade(p.time, receptorOpcacity);
                     }
                 }
             }
@@ -281,7 +306,7 @@ namespace StorybrewScripts
             moveDistance = moveDistance / 1000f; // Convert to seconds
             double duration = endTime - startTime;
             moveDistance = moveDistance * (float)duration;
-            double step = 6; // Update every 50ms
+            double step = 10; // Update every 50ms
             float totalSeps = (float)(duration / step);
 
             foreach (var column in columns)
@@ -316,12 +341,12 @@ namespace StorybrewScripts
                     bool isOutOfBounds = false;
 
                     // Wrap around logic for bounds
-                    if (nextX > bounds.Right && currentTime < 80188)
+                    if (currentX > bounds.Right)
                     {
-                        isOutOfBounds = true;
                         nextX = bounds.Left;
+                        isOutOfBounds = true;
                     }
-                    else if (nextX < bounds.Left && currentTime < 80188)
+                    else if (currentX < bounds.Left)
                     {
                         nextX = bounds.Right;
                         isOutOfBounds = true;
@@ -329,11 +354,16 @@ namespace StorybrewScripts
 
                     if (isOutOfBounds)
                     {
-                        column.receptor.renderedSprite.Fade(currentTime - 100, 0);
-                        column.receptor.renderedSprite.Fade(currentTime + 100, 1);
+                        column.receptor.renderedSprite.Fade(currentTime - 25, 0);
+                        column.receptor.renderedSprite.Fade(currentTime + 25, 1);
                     }
 
-                    // Apply movement and scaling
+                    if (currentTime > 80188 && isOutOfBounds)
+                    {
+                        break;
+                    }
+
+
                     column.ScaleColumn(OsbEasing.None, currentTime, currentTime + step - 1, new Vector2(currentScale), CenterTypeColumn.columnX);
                     column.MoveColumnRelativeX(OsbEasing.None, currentTime, currentTime + step, nextX - currentX);
 

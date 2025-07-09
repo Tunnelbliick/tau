@@ -32,6 +32,7 @@ namespace StorybrewScripts
             OsbSprite backgroundCover = cover.CreateSprite("sb/white.png", OsbOrigin.Centre, new Vector2(320, 240));
             backgroundCover.ScaleVec(0, 854f, 480f);
             backgroundCover.Color(0, new Color4(0, 0, 0, 1));
+            backgroundCover.Color(181221, 182769, new Color4(0, 0, 0, 1), new Color4(0, 0, 0, 1));
             backgroundCover.Fade(0, 1);
             backgroundCover.Fade(285381, 0);
 
@@ -47,51 +48,72 @@ namespace StorybrewScripts
             overlay.Fade(264230, 1);
             overlay.Fade(285381, 0);
 
-            OsbAnimation tunnel = background.CreateAnimation("sb/ani/tunnel/frame.jpg", 12, 200 / 12, OsbLoopType.LoopForever);
-            OsbSprite mask = background.CreateSprite("sb/ani/tunnel/mask.png");
+            OsbSprite crash = bgOverLay.CreateSprite("sb/white.png", OsbOrigin.Centre, new Vector2(320, 240));
+            crash.ScaleVec(168446, 854f, 480f);
+            crash.Fade(168446, 0.25f);
+            crash.Fade(169995, 0);
 
-            tunnel.Fade(234229, 1);
-            //tunnel.Additive(234229);
-            tunnel.ScaleVec(OsbEasing.InExpo, 234229 - 500, 234229, new Vector2(0f, 0f), new Vector2(0.5f));
-            tunnel.Rotate(234229, 249229, 0, Math.PI * 2);
+            OsbSprite crashOverlay = bgOverLay.CreateSprite("sb/crash.png", OsbOrigin.Centre, new Vector2(320, 240));
+            crashOverlay.Scale(OsbEasing.OutExpo, 168631, 168834, 0f, 0.35f);
+            crashOverlay.Fade(168631, 1f);
+            crashOverlay.Fade(169995, 0);
 
-            tunnel.ScaleVec(OsbEasing.OutCubic, 249229 - 500, 249229, new Vector2(.5f), new Vector2(0f));
-            tunnel.Fade(249229, 0);
 
-            var beatLenght = Beatmap.GetControlPointAt(234229).BeatDuration;
-
-            tunnel.StartLoopGroup(234229, (int)((249229 - 234229) / beatLenght));
-            tunnel.Color(OsbEasing.InOutSine, 0, beatLenght, new Color4(255, 0, 0, 1), new Color4(0, 255, 0, 1));
-            tunnel.Color(OsbEasing.InOutSine, beatLenght, beatLenght * 2, new Color4(0, 255, 0, 1), new Color4(255, 0, 0, 1));
-            tunnel.EndGroup();
-
-            mask.Fade(234229, 1);
-            mask.ScaleVec(OsbEasing.InExpo, 234229 - 500, 234229, new Vector2(0f, 0f), new Vector2(0.5f));
-            mask.Rotate(234229, 249229, 0, Math.PI * 2);
-            mask.Fade(249229, 0);
-
-            var analogBit = GetMapsetBitmap("sb/ani/analog/frame-0.jpeg");
-            var analogDMG = bgOverLay.CreateAnimation("sb/ani/analog/frame-.jpeg", 24, 1000 / 24, OsbLoopType.LoopForever);
-            analogDMG.Fade(234229, .8f);
+            var loopDuration = 1250;  //(int)Beatmap.GetControlPointAt(234229).BeatDuration * 3;
+            var analogBit = GetMapsetBitmap("sb/ani/analog/frame-0.jpg");
+            var analogDMG = bgOverLay.CreateAnimation("sb/ani/analog/frame-.jpg", 44, loopDuration / 44, OsbLoopType.LoopForever);
+            analogDMG.Fade(234229, 1f);
             analogDMG.Additive(234229);
             analogDMG.ScaleVec(234229, 855f / analogBit.Width, 500f / analogBit.Height);
             analogDMG.Fade(264230, 0);
+
+
+            analogDMG.StartLoopGroup(234229, (264230 - 234229) / loopDuration / 4);
+            analogDMG.FlipV(loopDuration, loopDuration * 2);
+            analogDMG.FlipH(loopDuration * 2, loopDuration * 3);
+            analogDMG.FlipV(loopDuration * 2, loopDuration * 3);
+            analogDMG.FlipH(loopDuration * 3, loopDuration * 4);
+            analogDMG.EndGroup();
+
 
             analogDMG.StartLoopGroup(234229, (264230 - 234229) / 1000 / 12);
             analogDMG.FlipV(1000 / 24, 1000 / 12);
             analogDMG.EndGroup();
 
+            var noiseR = bgOverLay.CreateAnimation("sb/atlas/noise/noise.png", 4, 60, OsbLoopType.LoopForever, OsbOrigin.Centre, new Vector2(315, 239));
+            noiseR.Fade(207156, 207156 + 500, 0, 0.1f);
+            noiseR.Additive(207156);
+            noiseR.Fade(219834, 0);
+            noiseR.Color(207156, new Color4(255, 0, 0, 1));
+
+            var noiseG = bgOverLay.CreateAnimation("sb/atlas/noise/noise.png", 4, 60, OsbLoopType.LoopForever, OsbOrigin.Centre, new Vector2(320, 240));
+            noiseG.Fade(207156, 207156 + 500, 0, 0.1f);
+            noiseG.Additive(207156);
+            noiseG.Fade(219834, 0);
+            noiseG.Color(207156, new Color4(0, 255, 0, 1));
+
+            var noiseB = bgOverLay.CreateAnimation("sb/atlas/noise/noise.png", 4, 60, OsbLoopType.LoopForever, OsbOrigin.Centre, new Vector2(325, 241));
+            noiseB.Fade(207156, 207156 + 500, 0, 0.1f);
+            noiseB.Additive(207156);
+            noiseB.Fade(219834, 0);
+            noiseB.Color(207156, new Color4(0, 0, 255, 1));
+
+            OsbSprite overlayEarly = bgOverLay.CreateSprite("sb/moody.png", OsbOrigin.Centre, new Vector2(320, 260));
+            overlayEarly.ScaleVec(207156, new Vector2(0.6f, 0.8f));
+            overlayEarly.Fade(207156, 208317, 1, 1f);
+            overlayEarly.Fade(219930, 0);
+
             var overlayBit = GetMapsetBitmap("sb/overlay.png");
             var overlaySprite = bgOverLay.CreateSprite("sb/overlay.png");
-            overlaySprite.Fade(207156, 207156 + 500, 0f, 0.1f);
-            overlaySprite.Additive(234229);
-            overlaySprite.Scale(234229, 854f / overlayBit.Width);
+            overlaySprite.Fade(0, 0 + 500, 0f, 0.1f);
+            overlaySprite.Additive(0);
+            overlaySprite.Scale(0, 854f / overlayBit.Width);
             overlaySprite.Fade(285381, 0);
 
             var vigenetteBit = GetMapsetBitmap("sb/vigenette.png");
             var vignette = bgOverLay.CreateSprite("sb/vigenette.png");
-            vignette.ScaleVec(234229, 854f / vigenetteBit.Width, 480f / vigenetteBit.Height);
-            vignette.Fade(207156, 207156 + 500, 0, 1);
+            vignette.ScaleVec(0, 854f / vigenetteBit.Width, 480f / vigenetteBit.Height);
+            vignette.Fade(0, 0 + 500, 0, 1);
             vignette.Fade(285381, 0);
 
             LostConnectionDebug();
@@ -221,16 +243,44 @@ namespace StorybrewScripts
             bottomCover.Color(207156, new Color4(0, 0, 0, 1));
             bottomCover.ScaleVec(207156, 854f, 200);
 
-            var sphere = background.CreateAnimation("sb/ani/sphere/frame.jpg", 24, 1000 / 24, OsbLoopType.LoopForever, OsbOrigin.Centre, new Vector2(0, 60));
-            sphere.Fade(207156, 207156 + 500, 0, 0.5f);
-            sphere.Scale(207156, 0.08f);
-            sphere.Rotate(207156, .4f);
-            sphere.Additive(207156);
+            var sphereR = background.CreateAnimation("sb/ani/sphere/frame.jpg", 24, 1000 / 24, OsbLoopType.LoopForever, OsbOrigin.Centre, new Vector2(-2, 59));
+            sphereR.Fade(207156, 207156 + 500, 0, 0.5f);
+            sphereR.Scale(207156, 0.08f);
+            sphereR.Rotate(207156, 0.4f);
+            sphereR.Additive(207156);
+            sphereR.Color(207156, new Color4(255, 0, 0, 1));
 
-            var atlast = background.CreateSprite("sb/atlas/atlas.png", OsbOrigin.CentreLeft, new Vector2(45, 60));
-            atlast.Fade(207156, 207156 + 500, 0, 0.5f);
-            atlast.Scale(207156, .3f);
-            atlast.Additive(207156);
+            var sphereG = background.CreateAnimation("sb/ani/sphere/frame.jpg", 24, 1000 / 24, OsbLoopType.LoopForever, OsbOrigin.Centre, new Vector2(0, 60));
+            sphereG.Fade(207156, 207156 + 500, 0, 0.5f);
+            sphereG.Scale(207156, 0.08f);
+            sphereG.Rotate(207156, 0.4f);
+            sphereG.Additive(207156);
+            sphereG.Color(207156, new Color4(0, 255, 0, 1));
+
+            var sphereB = background.CreateAnimation("sb/ani/sphere/frame.jpg", 24, 1000 / 24, OsbLoopType.LoopForever, OsbOrigin.Centre, new Vector2(2, 61));
+            sphereB.Fade(207156, 207156 + 500, 0, 0.5f);
+            sphereB.Scale(207156, 0.08f);
+            sphereB.Rotate(207156, 0.4f);
+            sphereB.Additive(207156);
+            sphereB.Color(207156, new Color4(0, 0, 255, 1));
+
+            var atlastR = background.CreateSprite("sb/atlas/atlas.png", OsbOrigin.CentreLeft, new Vector2(44, 59));
+            atlastR.Fade(207156, 207156 + 500, 0, 0.5f);
+            atlastR.Scale(207156, 0.3f);
+            atlastR.Additive(207156);
+            atlastR.Color(207156, new Color4(255, 0, 0, 1));
+
+            var atlastG = background.CreateSprite("sb/atlas/atlas.png", OsbOrigin.CentreLeft, new Vector2(45, 60));
+            atlastG.Fade(207156, 207156 + 500, 0, 0.5f);
+            atlastG.Scale(207156, 0.3f);
+            atlastG.Additive(207156);
+            atlastG.Color(207156, new Color4(0, 255, 0, 1));
+
+            var atlastB = background.CreateSprite("sb/atlas/atlas.png", OsbOrigin.CentreLeft, new Vector2(47, 61));
+            atlastB.Fade(207156, 207156 + 500, 0, 0.5f);
+            atlastB.Scale(207156, 0.3f);
+            atlastB.Additive(207156);
+            atlastB.Color(207156, new Color4(0, 0, 255, 1));
 
             var node1 = background.CreateSprite("sb/atlas/node.png", OsbOrigin.Centre, new Vector2(25, 135));
             var node1Text = background.CreateSprite("sb/atlas/text/node1.png", OsbOrigin.Centre, new Vector2(25, 110));
@@ -263,15 +313,29 @@ namespace StorybrewScripts
             var connectedSucces = background.CreateSprite("sb/atlas/text/connected.png", OsbOrigin.CentreLeft, new Vector2(442, 450));
 
             var atlastNetwork = background.CreateSprite("sb/atlas/network.png", OsbOrigin.CentreLeft, new Vector2(515, 140));
-
             atlastNetwork.Fade(207156, 207156 + 500, 0, 0.5f);
             atlastNetwork.Scale(207156, 0.4f);
 
-            var sphere2 = background.CreateAnimation("sb/ani/sphere/frame.jpg", 24, 1000 / 24, OsbLoopType.LoopForever, OsbOrigin.Centre, new Vector2(490, 135));
-            sphere2.Fade(207156, 207156 + 500, 0, 0.5f);
-            sphere2.Scale(207156, 0.05f);
-            sphere2.Rotate(207156, Math.PI + -.5f);
-            sphere2.Additive(207156);
+            var sphere2R = background.CreateAnimation("sb/ani/sphere/frame.jpg", 24, 1000 / 24, OsbLoopType.LoopForever, OsbOrigin.Centre, new Vector2(489, 134.5f));
+            sphere2R.Fade(207156, 207156 + 500, 0, 0.5f);
+            sphere2R.Scale(207156, 0.05f);
+            sphere2R.Rotate(207156, Math.PI + -0.5f);
+            sphere2R.Additive(207156);
+            sphere2R.Color(207156, new Color4(255, 0, 0, 1));
+
+            var sphere2G = background.CreateAnimation("sb/ani/sphere/frame.jpg", 24, 1000 / 24, OsbLoopType.LoopForever, OsbOrigin.Centre, new Vector2(490, 135));
+            sphere2G.Fade(207156, 207156 + 500, 0, 0.5f);
+            sphere2G.Scale(207156, 0.05f);
+            sphere2G.Rotate(207156, Math.PI + -0.5f);
+            sphere2G.Additive(207156);
+            sphere2G.Color(207156, new Color4(0, 255, 0, 1));
+
+            var sphere2B = background.CreateAnimation("sb/ani/sphere/frame.jpg", 24, 1000 / 24, OsbLoopType.LoopForever, OsbOrigin.Centre, new Vector2(491, 135.5f));
+            sphere2B.Fade(207156, 207156 + 500, 0, 0.5f);
+            sphere2B.Scale(207156, 0.05f);
+            sphere2B.Rotate(207156, Math.PI + -0.5f);
+            sphere2B.Additive(207156);
+            sphere2B.Color(207156, new Color4(0, 0, 255, 1));
 
             SpawnNode(new Vector2(540, 200), 12f, true);
             SpawnNode(new Vector2(540, 295), 12f);
@@ -407,12 +471,6 @@ namespace StorybrewScripts
             client2Connected.Color(219446, new Color4(0, 255, 0, 1));
             client2Connected.Fade(219446, 0.5f);
 
-            var noise = bgOverLay.CreateAnimation("sb/atlas/noise/noise.png", 4, 60, OsbLoopType.LoopForever, OsbOrigin.Centre, new Vector2(320, 240));
-            noise.Fade(207156, 207156 + 500, 0, .05f);
-            noise.Additive(207156);
-
-            noise.Fade(219834, 0);
-
             var fadeStart = 219543;
             var fadeEnd = 219834;
             var interval = 219608 - fadeStart;
@@ -431,8 +489,12 @@ namespace StorybrewScripts
                 fadeStart += interval;
             }
 
-            sphere.Fade(fadeEnd, currentFade);
-            atlast.Fade(fadeEnd, currentFade);
+            sphereR.Fade(fadeEnd, currentFade);
+            sphereG.Fade(fadeEnd, currentFade);
+            sphereB.Fade(fadeEnd, currentFade);
+            atlastR.Fade(fadeEnd, currentFade);
+            atlastG.Fade(fadeEnd, currentFade);
+            atlastB.Fade(fadeEnd, currentFade);
             log.Fade(fadeEnd, currentFade);
             node1.Fade(fadeEnd, currentFade);
             node2.Fade(fadeEnd, currentFade);
@@ -448,16 +510,35 @@ namespace StorybrewScripts
             client2Connected.Fade(fadeEnd, currentFade);
             connectedSucces.Fade(fadeEnd, currentFade);
             atlastNetwork.Fade(fadeEnd, currentFade);
-            sphere2.Fade(fadeEnd, currentFade);
+            sphere2R.Fade(fadeEnd, currentFade);
+            sphere2G.Fade(fadeEnd, currentFade);
+            sphere2B.Fade(fadeEnd, currentFade);
 
         }
 
         public void SpawnNode(Vector2 position, float size, bool filled = false)
         {
-            var border = background.CreateSprite("sb/white.png", OsbOrigin.Centre, position);
-            border.Fade(207156, 207156 + 1000, 0, 0.5f);
-            border.Scale(OsbEasing.OutCubic, 207156, 207156 + 250, 0, size + 5f);
-            border.Fade(219834, 0);
+            var borderR = background.CreateSprite("sb/white.png", OsbOrigin.Centre, position + new Vector2(-1f, -0.5f));
+            borderR.Fade(207156, 207156 + 1000, 0, 0.5f);
+            borderR.Scale(OsbEasing.OutCubic, 207156, 207156 + 250, 0, size + 5f);
+            borderR.Fade(219834, 0);
+            borderR.Additive(207156);
+            borderR.Color(207156, new Color4(255, 0, 0, 1));
+
+            var borderG = background.CreateSprite("sb/white.png", OsbOrigin.Centre, position);
+            borderG.Fade(207156, 207156 + 1000, 0, 0.5f);
+            borderG.Scale(OsbEasing.OutCubic, 207156, 207156 + 250, 0, size + 5f);
+            borderG.Fade(219834, 0);
+            borderG.Additive(207156);
+            borderG.Color(207156, new Color4(0, 255, 0, 1));
+
+            var borderB = background.CreateSprite("sb/white.png", OsbOrigin.Centre, position - new Vector2(-1f, -0.5f));
+            borderB.Fade(207156, 207156 + 1000, 0, 0.5f);
+            borderB.Scale(OsbEasing.OutCubic, 207156, 207156 + 250, 0, size + 5f);
+            borderB.Fade(219834, 0);
+            borderB.Additive(207156);
+            borderB.Color(207156, new Color4(0, 0, 255, 1));
+
 
             if (filled == false)
             {
@@ -472,7 +553,9 @@ namespace StorybrewScripts
         public double DrawLine(Vector2 start, Vector2 end, double animateStart, double duration, OsbEasing easing = OsbEasing.None)
         {
             var width = 2f;
-            var line = background.CreateSprite("sb/white.png", OsbOrigin.CentreLeft, start);
+            var lineR = background.CreateSprite("sb/white.png", OsbOrigin.CentreLeft, start);
+            var lineG = background.CreateSprite("sb/white.png", OsbOrigin.CentreLeft, start);
+            var lineB = background.CreateSprite("sb/white.png", OsbOrigin.CentreLeft, start);
 
             var length = (end - start).Length;
             var durationPerPixel = length / 100 * duration;
@@ -480,15 +563,47 @@ namespace StorybrewScripts
             var animateEnd = animateStart + durationPerPixel;
 
             if (animateStart == 207156)
-
-                line.Fade(207156, 207156 + 500, 0, 0.5f);
+            {
+                lineR.Fade(207156, 207156 + 500, 0, 0.5f);
+                lineG.Fade(207156, 207156 + 500, 0, 0.5f);
+                lineB.Fade(207156, 207156 + 500, 0, 0.5f);
+            }
             else
-                line.Fade(animateStart, 0.4f);
+            {
+                lineR.Fade(animateStart, 0.4f);
+                lineG.Fade(animateStart, 0.4f);
+                lineB.Fade(animateStart, 0.4f);
+            }
 
-            line.Fade(219834, 0);
-            line.ScaleVec(easing, animateStart, animateEnd, new Vector2(0, width), new Vector2((end - start).Length, width));
-            line.Rotate(animateStart, Math.Atan2(end.Y - start.Y, end.X - start.X));
-            line.Move(animateStart, start);
+            start += new Vector2(-0.5f, -0.5f);
+            end += new Vector2(-0.5f, -0.5f);
+
+            lineR.Fade(219834, 0);
+            lineR.Additive(207156);
+            lineR.Color(207156, new Color4(255, 0, 0, 1));
+            lineR.ScaleVec(easing, animateStart, animateEnd, new Vector2(0, width), new Vector2((end - start).Length, width));
+            lineR.Rotate(animateStart, Math.Atan2(end.Y - start.Y, end.X - start.X));
+            lineR.Move(animateStart, start);
+
+            start -= new Vector2(-0.5f, -0.5f);
+            end -= new Vector2(-0.5f, -0.5f);
+
+            lineG.Fade(219834, 0);
+            lineG.Additive(207156);
+            lineG.Color(207156, new Color4(0, 255, 0, 1));
+            lineG.ScaleVec(easing, animateStart, animateEnd, new Vector2(0, width), new Vector2((end - start).Length, width));
+            lineG.Rotate(animateStart, Math.Atan2(end.Y - start.Y, end.X - start.X));
+            lineG.Move(animateStart, start);
+
+            start -= new Vector2(-0.5f, -0.5f);
+            end -= new Vector2(-0.5f, -0.5f);
+
+            lineB.Fade(219834, 0);
+            lineB.Additive(207156);
+            lineB.Color(207156, new Color4(0, 0, 255, 1));
+            lineB.ScaleVec(easing, animateStart, animateEnd, new Vector2(0, width), new Vector2((end - start).Length, width));
+            lineB.Rotate(animateStart, Math.Atan2(end.Y - start.Y, end.X - start.X));
+            lineB.Move(animateStart, start);
 
             return animateEnd;
         }
