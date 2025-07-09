@@ -1,0 +1,21 @@
+﻿FormatVersion: 7
+Name: "AltAltFirstBuildUp 1"
+Script: "AltAltFirstBuildUp"
+Multithreaded: No
+Config:
+  RandomSeed:
+    Type: "System.Int32"
+    Value: "0"
+    DisplayName: "Random Seed"
+    BeginsGroup: "Common"
+Layers:
+  259e04cc7d584698b9af2a841d427594:
+    Name: "r"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes
+  2e88d7ffddce49368fef5e98b65c6f68:
+    Name: "n"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes

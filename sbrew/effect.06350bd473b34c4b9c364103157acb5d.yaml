@@ -1,0 +1,21 @@
+﻿FormatVersion: 7
+Name: "Dpad3d 1"
+Script: "Dpad3d"
+Multithreaded: No
+Config:
+  RandomSeed:
+    Type: "System.Int32"
+    Value: "0"
+    DisplayName: "Random Seed"
+    BeginsGroup: "Common"
+Layers:
+  bc6d33501c634da0982e348da66a5a84:
+    Name: "3d"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes
+  b7ff992253bb49e5bb3367a14f0708b5:
+    Name: "transition"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes

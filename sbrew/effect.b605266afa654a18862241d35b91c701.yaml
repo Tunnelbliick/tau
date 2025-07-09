@@ -1,0 +1,16 @@
+﻿FormatVersion: 7
+Name: "Groovecoaster 1"
+Script: "Groovecoaster"
+Multithreaded: No
+Config:
+  RandomSeed:
+    Type: "System.Int32"
+    Value: "0"
+    DisplayName: "Random Seed"
+    BeginsGroup: "Common"
+Layers:
+  2608d81961124f4caad20420bbbc30ca:
+    Name: "3d"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes

@@ -1,0 +1,21 @@
+﻿FormatVersion: 7
+Name: "OutroBGA 1"
+Script: "OutroBGA"
+Multithreaded: No
+Config:
+  RandomSeed:
+    Type: "System.Int32"
+    Value: "5"
+    DisplayName: "Random Seed"
+    BeginsGroup: "Common"
+Layers:
+  559ab8fc937c4627990a35a1340991ab:
+    Name: "BG_back"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes
+  3ca3cf993def4860add1aa36924bc217:
+    Name: "BG"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes

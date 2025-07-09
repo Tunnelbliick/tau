@@ -1,0 +1,21 @@
+﻿FormatVersion: 7
+Name: "TranceBGA 1"
+Script: "TranceBGA"
+Multithreaded: No
+Config:
+  RandomSeed:
+    Type: "System.Int32"
+    Value: "0"
+    DisplayName: "Random Seed"
+    BeginsGroup: "Common"
+Layers:
+  f7b30520b6d049cb857ed3186218e50f:
+    Name: "bga"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes
+  b978bc4b10c647b79e7ab2378fd26596:
+    Name: "overlay"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes

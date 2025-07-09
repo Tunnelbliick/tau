@@ -1,0 +1,26 @@
+﻿FormatVersion: 7
+Name: "Bgcover 1"
+Script: "Bgcover"
+Multithreaded: No
+Config:
+  RandomSeed:
+    Type: "System.Int32"
+    Value: "0"
+    DisplayName: "Random Seed"
+    BeginsGroup: "Common"
+Layers:
+  50d68404fb2445ad9d2de56938deab09:
+    Name: "cover"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes
+  af006d5ad529443b9e262ba0d34b302d:
+    Name: "bg"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes
+  034b759716a6461088a9bc232a31dea7:
+    Name: "bgOverlay"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes

@@ -1,0 +1,21 @@
+﻿FormatVersion: 7
+Name: "Dpad 1"
+Script: "Dpad"
+Multithreaded: No
+Config:
+  RandomSeed:
+    Type: "System.Int32"
+    Value: "0"
+    DisplayName: "Random Seed"
+    BeginsGroup: "Common"
+Layers:
+  6648667934d94eba9f40e357e6b03d0b:
+    Name: "r"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes
+  014d5cbb71d74a1b8a3aa4694b3e1e53:
+    Name: "n"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes

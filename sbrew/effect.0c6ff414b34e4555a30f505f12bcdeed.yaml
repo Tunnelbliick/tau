@@ -1,0 +1,26 @@
+﻿FormatVersion: 7
+Name: "Finaldrop 1"
+Script: "Finaldrop"
+Multithreaded: No
+Config:
+  RandomSeed:
+    Type: "System.Int32"
+    Value: "0"
+    DisplayName: "Random Seed"
+    BeginsGroup: "Common"
+Layers:
+  8b750f22f43c424d8a1a59b88356b4ef:
+    Name: "path"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes
+  5f70b0567961401f9034963e1d4023d7:
+    Name: "r"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes
+  29bb34a5056240b08aec86c2ec5a57f9:
+    Name: "n"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes

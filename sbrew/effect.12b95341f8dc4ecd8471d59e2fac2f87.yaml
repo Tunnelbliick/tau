@@ -1,0 +1,26 @@
+﻿FormatVersion: 7
+Name: "Transition 1"
+Script: "Transition"
+Multithreaded: No
+Config:
+  RandomSeed:
+    Type: "System.Int32"
+    Value: "0"
+    DisplayName: "Random Seed"
+    BeginsGroup: "Common"
+Layers:
+  73e781b041ed4bfa843ac0bc91825e50:
+    Name: "s"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes
+  8bd387341d444bb3b6779de8565e77e6:
+    Name: "r"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes
+  35e47696e9b8423da92204df0452c9a8:
+    Name: "n"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes

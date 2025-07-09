@@ -1,0 +1,16 @@
+﻿FormatVersion: 7
+Name: "GCBack 1"
+Script: "GCBack"
+Multithreaded: No
+Config:
+  RandomSeed:
+    Type: "System.Int32"
+    Value: "0"
+    DisplayName: "Random Seed"
+    BeginsGroup: "Common"
+Layers:
+  c39422b2ebb44d23bd5fe793f14b098b:
+    Name: "GCBack"
+    OsbLayer: Overlay
+    DiffSpecific: No
+    Visible: Yes
